@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <form class="col s12" action="{{url_for('.login')}}" method="post">
+      <div class="row">
+        <div class="input-field col s5">
+          {{form.bucket_name(class="validate")}}
+          {{form.bucket_name.label}}
+        </div>
+        <div class="input-field col s5">
+          {{form.location}}
+          {{form.location.label}}
+        </div>
+        {{form.hidden_tag()}}
+
+        <div class="input-field col s2">
+          <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock content %}
+{% block onLoad %}
+  $('select').material_select();
+{% endblock %}

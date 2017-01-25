@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {{ content.Contents }}
+  <div class="row">
+    <div class="col s12">
+      {% for c in content.Contents %}
+        <div class="card blue-grey">
+          <div class="card-content white-text">
+            <span class="card-title">{{c.Key}}</span>
+            <p>Last modified: {{c.LastModified}}</p>
+            <p>Owner: {{c.Owner.DisplayName}}</p>
+          </div>
+          <div class="card-action">
+            <a href="{{url_for('.bucket', name=bucket.Name)}}">Download</a>
+            <a class="right red" href="#">Delete</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

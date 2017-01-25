@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col s12">
+      <div class="collection">
+        {% for bucket in buckets %}
+          <div class="collection-item">
+            <span class="title"><a class="collection-item" href="{{url_for('.bucket', bucket=bucket.Name)}}">{{bucket.Name}}</a></span>
+            <sub>Created on: {{bucket.CreationDate}}</sub>
+            <a  class="secondary-content red-text"
+                href="{{url_for('.remove_bucket', bucket=bucket.Name)}}">
+              <i class="small material-icons">delete</i>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large red" href="{{url_for('.create_bucket')}}">
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    {% for c in content.Contents %}
+      <div class="col s12 m6 l3">
+        <div class="card blue-grey">
+          <div class="card-content white-text">
+            <span class="card-title">{{c.Key}}</span>
+            <p>Last modified: {{c.LastModified}}</p>
+            <p>Owner: {{c.Owner.DisplayName}}</p>
+          </div>
+          <div class="card-action">
+            <a class="btn" target="_blank" href="{{url_for('.download', bucket=content.Name, _file=c.Key)}}">Download</a>
+            <a class="btn right red" href="{{url_for('.delete_file', bucket=content.Name, _file=c.Key)}}">Delete</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="fixed-action-btn">
+    <form method='post' action="{{url_for('.upload_file', bucket=content.Name)}}" enctype="multipart/form-data">
+      <input style="visibility: hidden;width:0px;height:0px;" 
+             multiple 
+             type="file" name="file[]" id="upload" 
+             onchange="this.form.submit()"/>
+      <a class="btn-floating btn-large red"
+         href="#"
+         onclick="document.getElementById('upload').click(); return false">
+        <i class="large material-icons">add</i>
+      </a>
+    </form>
+  </div>
+
+{% endblock %}
