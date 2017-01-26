@@ -16,10 +16,14 @@ def check_login(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if g.logged:
-            try:
-                return f(*args, **kwargs)
-            except:
-                return logout()
+            # try:
+            return f(*args, **kwargs)
+            # except Exception as e:
+                # print e
+                # session.clear()
+                # g.logged = False
+                # flash("Session invalid, please log in again")
+                # return redirect(url_for(".index"))
         flash("You should be logged in to access this page")
         return redirect(url_for('.index'))
     return wrap
@@ -68,13 +72,13 @@ def login():
         return redirect(url_for('.buckets'))
     flash("can't login")
     flash(form.errors)
-    return redirect(request.referrer or url_for('.index'))
+    return redirect(url_for('.index'))
 
 @front.route('/buckets')
 @check_login
 def buckets():
     if not session.get("logged"):
-        return redirec(url_for('.index'))
+        return redirect(url_for('.index'))
     b = get_client(None).list_buckets()
     buckets = b['Buckets']
     return render_template('frontend/buckets.html', buckets=buckets)
@@ -86,9 +90,10 @@ def bucket(bucket):
     b = get_client(r).list_objects(Bucket=bucket)
     return render_template('frontend/bucket.html', content=b)
 
-@front.route('/download/<bucket>/<_file>')
+@front.route('/download')
 @check_login
-def download(bucket, _file):
+def download():
+    bucket, _file = request.args.get('bucket'), request.args.get("file")
     r = get_client(None).get_bucket_location(Bucket=bucket)
     return redirect(get_client(r).generate_presigned_url('get_object', Params={
         'Bucket': bucket,
@@ -107,16 +112,18 @@ def upload_file():
         _f.close()
     return redirect(request.referrer)
 
-@front.route('/delete/<bucket>/<_file>')
+@front.route('/delete')
 @check_login
-def delete_file(bucket, _file):
+def delete_file():
+    bucket, _file = request.args.get('bucket'), request.args.get("file")
     c = get_client_location(bucket)
     c.delete_object(Bucket=bucket, Key=_file)
     return redirect(request.referrer)
 
-@front.route('/remove/<bucket>')
+@front.route('/remove')
 @check_login
-def remove_bucket(bucket):
+def remove_bucket():
+    bucket = request.args.get('bucket')
     c = get_client_location(bucket)
     try:
         c.delete_bucket(Bucket=bucket)
@@ -129,10 +136,19 @@ def remove_bucket(bucket):
 def create_bucket():
     form = NewBucket()
     if form.validate_on_submit():
-        cfg = {"LocationConstraint": form.location.data}
-        c = get_client_location(cfg)
-        c.create_bucket(Bucket=form.bucket_name.data,
+        loc = form.location.data
+        if loc == u'us-east-1':   # Boto 3 does not support us-east-1 as location because it is default location
+            c = get_client(None)  # Stupid limitation of boto3 (╯°□°)╯︵ ┻━┻
+            c.create_bucket(Bucket=form.bucket_name.data)
+        else:
+            cfg = {"LocationConstraint": loc}
+            c.create_bucket(Bucket=form.bucket_name.data,
                 CreateBucketConfiguration=cfg)
+        # try:
+        # except Exception as e:
+            # print "Bucket creation failed with"
+            # print e
+            # flash(e)
         return redirect(url_for('.bucket', bucket=form.bucket_name.data))
     return render_template('frontend/newBucket.html', form=form)
 
@@ -141,6 +157,5 @@ def create_bucket():
 def logout():
     g.logged = False
     session.clear()
-    print session.get("logged"), session.get("key"), session.get("id")
     flash("You've been successfully logged out")
     return redirect(url_for(".index"))

@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="row">
-    <form class="col s12" action="{{url_for('.login')}}" method="post">
+    <form class="col s12" action="{{url_for('.create_bucket')}}" method="post">
       <div class="row">
         <div class="input-field col s5">
           {{form.bucket_name(class="validate")}}
