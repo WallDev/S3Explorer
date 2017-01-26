@@ -27,14 +27,14 @@
       <nav>
         <div class="nav-wrapper">
           <ul class="left" id="nav-mobile">
-            {% if not g.logged %}
-              <li><a href="{{url_for('.login')}}">Login</a></li>
-            {% else %}
+            {% if g.logged %}
               <li><a href="{{url_for('.buckets')}}">Buckets</a></li>
               <li><a href="{{url_for('.create_bucket')}}">New Bucket</a></li>
             {% endif %}
           </ul>
-          <a  class="right" href="{{url_for('.logout')}}">Logout</a>
+          {% if g.logged %}
+            <a  class="right" href="{{url_for('.logout')}}">Logout</a>
+          {%endif%}
         </div>
       </nav>
       <div class="main">

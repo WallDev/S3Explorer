@@ -122,7 +122,7 @@ def remove_bucket(bucket):
         c.delete_bucket(Bucket=bucket)
     except Exception as e:
         flash("Cannot delete bucket %s" % e)
-    return redirect(request.referrer)
+    return redirect(url_for('.buckets'))
 
 @front.route('/newBucket', methods=['GET', 'POST'])
 @check_login
