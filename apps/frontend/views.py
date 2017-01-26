@@ -16,7 +16,10 @@ def check_login(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if g.logged:
-            return f(*args, **kwargs)
+            try:
+                return f(*args, **kwargs)
+            except:
+                return logout()
         flash("You should be logged in to access this page")
         return redirect(url_for('.index'))
     return wrap
