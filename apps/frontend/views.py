@@ -17,6 +17,7 @@ def check_login(f):
     def wrap(*args, **kwargs):
         if g.logged:
             return f(*args, **kwargs)
+        flash("You should be logged in to access this page")
         return redirect(url_for('.index'))
     return wrap
 
@@ -131,3 +132,12 @@ def create_bucket():
                 CreateBucketConfiguration=cfg)
         return redirect(url_for('.bucket', bucket=form.bucket_name.data))
     return render_template('frontend/newBucket.html', form=form)
+
+@front.route("/logout")
+@check_login
+def logout():
+    g.logged = False
+    session.clear()
+    print session.get("logged"), session.get("key"), session.get("id")
+    flash("You've been successfully logged out")
+    return redirect(url_for(".index"))
