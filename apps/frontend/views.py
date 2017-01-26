@@ -16,15 +16,7 @@ def check_login(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if g.logged:
-            # try:
             return f(*args, **kwargs)
-            # except Exception as e:
-                # print e
-                # session.clear()
-                # g.logged = False
-                # flash("Session invalid, please log in again")
-                # return redirect(url_for(".index"))
-        flash("You should be logged in to access this page")
         return redirect(url_for('.index'))
     return wrap
 
@@ -79,15 +71,21 @@ def login():
 def buckets():
     if not session.get("logged"):
         return redirect(url_for('.index'))
-    b = get_client(None).list_buckets()
-    buckets = b['Buckets']
+    try:
+        b = get_client(None).list_buckets()
+        buckets = b['Buckets']
+    except Exception as e:
+        flash(e)
     return render_template('frontend/buckets.html', buckets=buckets)
 
 @front.route('/bucket/<bucket>')
 @check_login
 def bucket(bucket):
-    r = get_client(None).get_bucket_location(Bucket=bucket)
-    b = get_client(r).list_objects(Bucket=bucket)
+    try:
+        r = get_client(None).get_bucket_location(Bucket=bucket)
+        b = get_client(r).list_objects(Bucket=bucket)
+    except Exception as e:
+        flash(e)
     return render_template('frontend/bucket.html', content=b)
 
 @front.route('/download')
@@ -95,29 +93,39 @@ def bucket(bucket):
 def download():
     bucket, _file = request.args.get('bucket'), request.args.get("file")
     r = get_client(None).get_bucket_location(Bucket=bucket)
-    return redirect(get_client(r).generate_presigned_url('get_object', Params={
-        'Bucket': bucket,
-        'Key': _file
-        }, ExpiresIn=100))
+    try:
+        return redirect(get_client(r).generate_presigned_url('get_object', Params={
+            'Bucket': bucket,
+            'Key': _file
+            }, ExpiresIn=100))
+    except Exception as e:
+        flash(e)
+        return redirect(request.referrer)
 
 @front.route('/upload', methods=['POST'])
 @check_login
 def upload_file():
     b = request.args.get('bucket')
-    c = get_client_location(b)
-    for f in request.files.getlist("file[]"):
-        _f = tempfile.TemporaryFile()
-        f.save(_f.name)
-        c.upload_file(_f.name, b, f.filename)
-        _f.close()
+    try:
+        c = get_client_location(b)
+        for f in request.files.getlist("file[]"):
+            _f = tempfile.TemporaryFile()
+            f.save(_f.name)
+            c.upload_file(_f.name, b, f.filename)
+            _f.close()
+    except Exception as e:
+        flash(e)
     return redirect(request.referrer)
 
 @front.route('/delete')
 @check_login
 def delete_file():
     bucket, _file = request.args.get('bucket'), request.args.get("file")
-    c = get_client_location(bucket)
-    c.delete_object(Bucket=bucket, Key=_file)
+    try:
+        c = get_client_location(bucket)
+        c.delete_object(Bucket=bucket, Key=_file)
+    except Exception as e:
+        flash(e)
     return redirect(request.referrer)
 
 @front.route('/remove')
@@ -137,19 +145,17 @@ def create_bucket():
     form = NewBucket()
     if form.validate_on_submit():
         loc = form.location.data
-        if loc == u'us-east-1':   # Boto 3 does not support us-east-1 as location because it is default location
-            c = get_client(None)  # Stupid limitation of boto3 (╯°□°)╯︵ ┻━┻
-            c.create_bucket(Bucket=form.bucket_name.data)
-        else:
-            cfg = {"LocationConstraint": loc}
-            c.create_bucket(Bucket=form.bucket_name.data,
-                CreateBucketConfiguration=cfg)
-        # try:
-        # except Exception as e:
-            # print "Bucket creation failed with"
-            # print e
-            # flash(e)
-        return redirect(url_for('.bucket', bucket=form.bucket_name.data))
+        try:
+            if loc == u'us-east-1':   # Boto 3 does not support us-east-1 as location because it is default location
+                c = get_client(None)  # Stupid limitation of boto3 (╯°□°)╯︵ ┻━┻
+                c.create_bucket(Bucket=form.bucket_name.data)
+            else:
+                cfg = {"LocationConstraint": loc}
+                c.create_bucket(Bucket=form.bucket_name.data,
+                    CreateBucketConfiguration=cfg)
+            return redirect(url_for('.bucket', bucket=form.bucket_name.data))
+        except Exception as e:
+            flash(e)
     return render_template('frontend/newBucket.html', form=form)
 
 @front.route("/logout")
