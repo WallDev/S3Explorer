@@ -154,6 +154,7 @@ def create_bucket():
                 c = get_client(None)  # Stupid limitation of boto3 (╯°□°)╯︵ ┻━┻
                 c.create_bucket(Bucket=form.bucket_name.data,
                     CreateBucketConfiguration=cfg)
+            flash("Bucket created!")
             return redirect(url_for('.bucket', bucket=form.bucket_name.data))
         except Exception as e:
             flash(e)
