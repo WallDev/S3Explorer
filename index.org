@@ -1,0 +1,22 @@
+* S3Explorer
+A simple and easy AWS S3 bucket explorer.
+This is very simple and lightweight version in which you are able create, view and delete files and buckets on your server.
+The application is very simple with responsive design
+
+** Interface
+Consist of 4 screens, a navbar and one button that changes context on different pages:
+  * Login screen :: just input your key and key ID for your account and you will be forwarded to buckets list page 
+  [[./images/1485552320.png]]
+
+  * Buckets list :: a table with buckets names and their creation date. Clicking on a name will take you to the content of the bucket, while clicking on the trash icon will remove the bucket. NOTE: Bucket can be removed only if it's empty 
+  [[./images/1485552339.png]] 
+
+  * Bucket content :: This shows the content of the bucket after you click on
+    bucket name on Bucket list page with option either download file or delete 
+  [[./images/1485552359.png]]
+
+  * New Bucket :: Clicking on "New Bucket" in top nav will take you to bucket creation where you will have the option to chose desired region and give a name for the new bucket 
+  [[./images/1485552395.png]]
+
+  * FAB + (plus sign) :: on Bucket list and Bucket content pages there is a FAB
+    which creates new bucket or uploads a file respectively.
