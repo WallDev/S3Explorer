@@ -15,7 +15,7 @@ front = Blueprint('frontend', __name__)
 def check_login(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if g.logged:
+        if session.get("logged")
             return f(*args, **kwargs)
         return redirect(url_for('.index'))
     return wrap
