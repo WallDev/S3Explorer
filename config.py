@@ -1,6 +1,6 @@
 SECRET_KEY = "somesecretkeywhichimpossibletogues...iguess"
 
-DEBUG = True
+DEBUG = False
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 
 JSON_AS_ASCII = False

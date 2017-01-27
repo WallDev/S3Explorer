@@ -33,7 +33,7 @@
             {% endif %}
           </ul>
           {% if g.logged %}
-            <a  class="right" href="{{url_for('.logout')}}">Logout</a>
+            <a  id="logout-button" class="right" href="{{url_for('.logout')}}">Logout</a>
           {%endif%}
         </div>
       </nav>
