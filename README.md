@@ -23,3 +23,4 @@ While this is a kind of sloppy implementation - it perfectly works for such simp
 * frontend folder hold all the views and logic of the application
 * utils for third party modules that require initialization
 
+A short guide to S3Explorer can be found [here](https://walldev.github.io/S3Explorer/)
