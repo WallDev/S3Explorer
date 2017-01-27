@@ -151,6 +151,7 @@ def create_bucket():
                 c.create_bucket(Bucket=form.bucket_name.data)
             else:
                 cfg = {"LocationConstraint": loc}
+                c = get_client(None)  # Stupid limitation of boto3 (╯°□°)╯︵ ┻━┻
                 c.create_bucket(Bucket=form.bucket_name.data,
                     CreateBucketConfiguration=cfg)
             return redirect(url_for('.bucket', bucket=form.bucket_name.data))
