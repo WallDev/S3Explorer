@@ -24,4 +24,4 @@ While this is a kind of sloppy implementation - it perfectly works for such simp
 * utils for third party modules that require initialization
 
 A short guide to S3Explorer can be found [here](https://walldev.github.io/S3Explorer/)
-A running instance can be found [here][http://88.99.85.182:5000]
+A running instance can be found [here](http://88.99.85.182:5000)
