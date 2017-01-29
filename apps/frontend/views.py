@@ -75,7 +75,7 @@ def buckets():
         b = get_client(None).list_buckets()
     except Exception as e:
         flash(e)
-        return(url_for('.index'))
+        return redirect(url_for('.index'))
 
     buckets = b['Buckets']
     return render_template('frontend/buckets.html', buckets=buckets)
