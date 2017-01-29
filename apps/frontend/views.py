@@ -73,9 +73,11 @@ def buckets():
         return redirect(url_for('.index'))
     try:
         b = get_client(None).list_buckets()
-        buckets = b['Buckets']
     except Exception as e:
         flash(e)
+        return(url_for('.index'))
+
+    buckets = b['Buckets']
     return render_template('frontend/buckets.html', buckets=buckets)
 
 @front.route('/bucket/<bucket>')

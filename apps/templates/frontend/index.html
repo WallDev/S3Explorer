@@ -12,13 +12,14 @@
     <form class="col s12" action="{{url_for('.login')}}" method="post">
       <div class="row">
         <div class="input-field col s5">
-          {{form.access_key(class="validate")}}
-          {{form.access_key.label}}
-        </div>
-        <div class="input-field col s5">
           {{form.key_id}}
           {{form.key_id.label}}
         </div>
+        <div class="input-field col s5">
+          {{form.access_key(class="validate")}}
+          {{form.access_key.label}}
+        </div>
+
         {{form.hidden_tag()}}
 
         <div class="input-field col s2">
